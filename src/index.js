@@ -2,38 +2,29 @@ import Phaser from 'phaser'
 import starUrl from './assets/star.png'
 import dudeUrl from './assets/dude.png'
 import updateFn from './update'
+import Player from './player'
 
-let state = {}
+let state = {
+  actors: [
+    new Player()
+  ]
+}
 
-function preload ()
-{
+function preload() {
   this.load.image('star', starUrl)
-
-  this.load.spritesheet(
-    'dude', 
-    dudeUrl,
-    { frameWidth: 32, frameHeight: 48 }
-  );
+  _.each(state.actors, actor => {
+    actor.preload.call(actor, this)
+  })
 }
 
 function create() {
-  const player = this.physics.add.sprite(
-    100,
-    450,
-    'dude'
-  );
-
-  player.setBounce(0.2);
-  // player.setDamping(true);
-  player.setDrag(800);
-  player.setCollideWorldBounds(true);
-
-  state.player = player
-
   this.add.image(400, 300, 'star')
+  _.each(state.actors, actor => {
+    actor.create.call(actor, this)
+  })
 }
 
-function update ()
+function update()
 {
   updateFn(state, this)
 }
