@@ -17,12 +17,21 @@
  "nextobjectid":1,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"2018.11.13",
+ "tiledversion":"2018.11.14",
  "tileheight":16,
  "tilesets":[
         {
+         "columns":8,
          "firstgid":1,
-         "source":"tileset.tsx"
+         "image":"..\/assets\/tileset.png",
+         "imageheight":96,
+         "imagewidth":128,
+         "margin":0,
+         "name":"tileset",
+         "spacing":0,
+         "tilecount":48,
+         "tileheight":16,
+         "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",

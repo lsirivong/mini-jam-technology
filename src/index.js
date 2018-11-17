@@ -3,6 +3,7 @@ import Phaser from 'phaser'
 import starUrl from './assets/star.png'
 import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
+import tiledJson from './tilemaps/level-1.json'
 import updateFn from './update'
 import Player from './player'
 import Walls from './walls'
@@ -75,8 +76,13 @@ function loadLevelFromTexture(textures, key) {
 
 function preload() {
   this.load.image('star', starUrl)
-  this.load.image('level-1', level1Url)
-  this.load.spritesheet('tileset', tilesetUrl, { frameWidth: CELL_SIZE, frameHeight: CELL_SIZE })
+  // this.load.image('level-1', level1Url)
+  // this.load.spritesheet('tileset', tilesetUrl, { frameWidth: CELL_SIZE, frameHeight: CELL_SIZE })
+  this.load.image('tileset', tilesetUrl)
+  this.load.tilemapTiledJSON({
+    key: 'level1',
+    url: tiledJson
+  });
 
   _.each(state.actors, actor => {
     actor.preload.call(actor, this)
@@ -90,55 +96,16 @@ function preload() {
 function create() {
   this.add.image(400, 300, 'star')
 
-  state.map = this.make.tilemap({
-    tileWidth: 16,
-    tileHeight: 16,
-    width: 20,
-    height: 16,
-  })
+  state.map = this.make.tilemap({ key: 'level1' })
   const { map } = state
 
-  var tileset = map.addTilesetImage(
-    'tileset',
-  );
-  const layer = map.createBlankDynamicLayer('Layer 1', tileset);
+  var tiles = map.addTilesetImage('tileset');
 
-  const TILES = {
-    TOP_LEFT_WALL: 24,
-    TOP_WALL: 25,
-    TOP_RIGHT_WALL: 26,
-    LEFT_WALL: 32,
-    RIGHT_WALL: 34,
-    BOTTOM_LEFT_WALL: 40,
-    BOTTOM_WALL: 41,
-    BOTTOM_RIGHT_WALL: 41,
-    FLOOR: 13,
-  }
-
-  level = loadLevelFromTexture(this.textures, 'level-1')
-  _.each(level, (column, x) => {
-    _.each(column, (cell, y) => {
-      // this.add.sprite(400, 300, 'star')
-      //       const tile = this.add.sprite(
-      //         x * CELL_SIZE,
-      //         y * CELL_SIZE,
-      //         'tilemap'
-      //       )
-      // tile.setOrigin(0)
-      if (cell == WALL) {
-        map.putTileAt(TILES.TOP_LEFT_WALL, x, y)
-      }
-      else {
-        map.putTileAt(TILES.FLOOR, x, y)
-      }
-    })
-  })
+  var layer = map.createStaticLayer(0, tiles, 0, 0);
 
   _.each(state.actors, actor => {
     actor.create.call(actor, this)
   })
-
-  // this.physics.add.collider(state.actors.player.gameObject, state.actors.walls.gameObject);
 }
 
 function update()
