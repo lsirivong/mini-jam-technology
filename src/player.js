@@ -1,5 +1,5 @@
 import dudeUrl from './assets/dude.png'
-const PLAYER_SPEED = 200;
+const PLAYER_SPEED = 300;
 const AXIS_THRESHOLD = 0.2;
 
 const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
