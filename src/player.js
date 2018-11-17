@@ -26,29 +26,28 @@ class Player {
   }
 
   create(scene) {
-    const player = scene.physics.add.sprite(
+    const gameObject = scene.physics.add.sprite(
       100,
       450,
       'dude'
     );
 
-    player.setBounce(0.2);
-    // player.setDamping(true);
-    player.setDrag(800);
-    player.setCollideWorldBounds(true);
+    gameObject.setBounce(0.2);
+    // gameObject.setDamping(true);
+    gameObject.setDrag(800);
+    gameObject.setCollideWorldBounds(true);
 
-    this.player = player
+    this.gameObject = gameObject
   }
 
   update(scene) {
-
-    const player = this.player
+    const gameObject = this.gameObject
 
     const xMult = getAxisValue(scene, 'left', 'right', 0)
-    player.setVelocityX(xMult * PLAYER_SPEED);
+    gameObject.setVelocityX(xMult * PLAYER_SPEED);
 
     const yMult = getAxisValue(scene, 'up', 'down', 1)
-    player.setVelocityY(yMult * PLAYER_SPEED);
+    gameObject.setVelocityY(yMult * PLAYER_SPEED);
   }
 }
 

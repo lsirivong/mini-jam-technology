@@ -4,11 +4,13 @@ import starUrl from './assets/star.png'
 import dudeUrl from './assets/dude.png'
 import updateFn from './update'
 import Player from './player'
+import Walls from './walls'
 
 let state = {
-  actors: [
-    new Player()
-  ]
+  actors: {
+    walls: new Walls(),
+    player: new Player(),
+  }
 }
 
 function preload() {
@@ -29,6 +31,8 @@ function create() {
   _.each(state.actors, actor => {
     actor.create.call(actor, this)
   })
+
+  this.physics.add.collider(state.actors.player.gameObject, state.actors.walls.gameObject);
 }
 
 function update()
