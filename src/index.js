@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import Phaser from 'phaser'
 import starUrl from './assets/star.png'
 import dudeUrl from './assets/dude.png'
