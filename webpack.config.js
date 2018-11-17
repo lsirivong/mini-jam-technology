@@ -14,7 +14,8 @@ module.exports = env => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'Output Mgmt'
+      title: 'Output Mgmt',
+      template: 'src/index.html',
     }),
     new webpack.HotModuleReplacementPlugin()
   ],

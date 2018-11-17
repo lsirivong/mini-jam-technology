@@ -1,4 +1,4 @@
-import dudeUrl from './assets/dude.png'
+import spritesheet from './assets/player_spritesheet.png'
 const PLAYER_SPEED = 300;
 const AXIS_THRESHOLD = 0.2;
 
@@ -20,15 +20,15 @@ class Player {
   preload(scene) {
     scene.load.spritesheet(
       'dude', 
-      dudeUrl,
-      { frameWidth: 32, frameHeight: 48 }
+      spritesheet,
+      { frameWidth: 16, frameHeight: 16 }
     );
   }
 
   create(scene) {
     const gameObject = scene.physics.add.sprite(
-      100,
-      450,
+      120,
+      120,
       'dude'
     );
 
