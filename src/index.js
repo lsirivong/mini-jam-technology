@@ -16,6 +16,12 @@ function preload() {
   _.each(state.actors, actor => {
     actor.preload.call(actor, this)
   })
+
+  this.input.gamepad.once('connected', function (pad) {
+      //   'pad' is a reference to the gamepad that was just connected
+    console.log('PAD CONNECTED', pad)
+    pad.threshold = 0.5
+  });
 }
 
 function create() {
@@ -31,23 +37,26 @@ function update()
 }
 
 var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-      default: 'arcade',
-      arcade: {
-        gravity: {
-          y: 0
-        },
-        debug: false
-      }
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: {
+        y: 0
+      },
+      debug: false
     }
+  },
+  scene: {
+      preload: preload,
+      create: create,
+      update: update
+  },
+  input: {
+    gamepad: true
+  },
 };
 
 var game = new Phaser.Game(config);

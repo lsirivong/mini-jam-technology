@@ -1,5 +1,20 @@
 import dudeUrl from './assets/dude.png'
 const PLAYER_SPEED = 200;
+const AXIS_THRESHOLD = 0.2;
+
+const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
+  const cursors = scene.input.keyboard.createCursorKeys()
+  const pad = _.get(scene, 'input.gamepad.gamepads[0]')
+
+  if (_.get(cursors, [negativeButton, 'isDown']) || _.get(pad, negativeButton) ? -1 : 0) {
+    return -1
+  } else if (_.get(cursors, [positiveButton, 'isDown']) || _.get(pad, positiveButton) ? -1 : 0) {
+    return 1
+  } else {
+    const val = _.get(pad, `axes[${axisIndex}].value`) || 0
+    return Math.abs(val) > AXIS_THRESHOLD ? val : 0
+  }
+}
 
 class Player {
   preload(scene) {
@@ -26,35 +41,14 @@ class Player {
   }
 
   update(scene) {
-    const cursors = scene.input.keyboard.createCursorKeys();
+
     const player = this.player
-    if (cursors.left.isDown) {
-      player.setVelocityX(-PLAYER_SPEED);
-    }
-    else if (cursors.right.isDown) {
-      player.setVelocityX(PLAYER_SPEED);
 
-      // player.anims.play('right', true);
-    }
-    else {
-      // player.setVelocityX(0);
+    const xMult = getAxisValue(scene, 'left', 'right', 0)
+    player.setVelocityX(xMult * PLAYER_SPEED);
 
-      // player.anims.play('turn');
-    }
-
-    if (cursors.up.isDown) {
-      player.setVelocityY(-PLAYER_SPEED);
-
-      // player.anims.play('right', true);
-    }
-    else if (cursors.down.isDown) {
-      player.setVelocityY(PLAYER_SPEED);
-
-      // player.anims.play('right', true);
-    }
-    else {
-      // player.setVelocityY(0)
-    }
+    const yMult = getAxisValue(scene, 'up', 'down', 1)
+    player.setVelocityY(yMult * PLAYER_SPEED);
   }
 }
 
