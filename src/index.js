@@ -10,6 +10,7 @@ import tilesetUrl from './assets/tileset.png'
 import tiledJson from './tilemaps/level-1.json'
 import updateFn from './update'
 import Player from './player'
+import pickCable from './pickCable'
 
 
 let state = {
@@ -104,9 +105,9 @@ function create() {
 
   map.createStaticLayer('background', tiles, 0, 0);
   map.createStaticLayer('level', tiles, 0, 0);
-  map.createStaticLayer('items', tiles, 0, 0);
-  state.playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
   state.cableLayer = map.createDynamicLayer('cables', tiles, 0, 0);
+  map.createDynamicLayer('items', tiles, 0, 0);
+  state.playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
 
   map.setLayer(state.playerLayer)
 
@@ -130,7 +131,38 @@ function create() {
   })
 
   state.player.create.call(state.player, this, playerTile.x, playerTile.y)
+  state.player.emitter.on('move', handlePlayerMove, this)
   map.removeTileAt(playerTile.x, playerTile.y)
+}
+
+function handlePlayerMove(x, y, deltaX, deltaY) {
+  const { map } = state
+
+  // put a cable where we used to be
+  // const prevItemTile = map.getTileAt(x - deltaX, y - deltaY, false, 'items')
+  // if (!prevItemTile) {
+    const cableIndex = pickCable(deltaX, deltaY, state.player.moveHistory)
+    map.putTileAt(cableIndex, x - deltaX, y - deltaY, true, 'cables')
+  // }
+
+  // check for items in the new tile
+  const itemTile = map.getTileAt(x, y, false, 'items')
+  if (_.get(itemTile, 'properties.off_switch')) {
+    // if there's a switch on new position, flip it on
+    const SPR = {
+      ON_SWITCH: 31
+    }
+    map.putTileAt(SPR.ON_SWITCH, x, y, true, 'items')
+  } else if (_.get(itemTile, 'properties.exit')) {
+    // if we're on the exit, check win condition
+    console.log('WIN')
+  }
+
+  // if (!_.get(itemTile, 'properties.prevent_cable')){
+    // unless tile prevents it, draw a cable
+    const underCableIndex = pickCable(-deltaX, -deltaY, null)
+    map.putTileAt(underCableIndex, x, y, true, 'cables')
+  // }
 }
 
 function update()

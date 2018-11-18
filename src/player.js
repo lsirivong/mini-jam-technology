@@ -1,74 +1,9 @@
 import _ from 'lodash'
 import spritesheet from './assets/player_spritesheet.png'
+import pickCable from './pickCable'
 
 const PLAYER_SPEED = 300;
 const AXIS_THRESHOLD = 0.2;
-
-function pickCable(deltaX, deltaY, moveHistory) {
-  const lastMove = _.last(moveHistory)
-  const lastDeltaX = _.get(lastMove, 0)
-  const lastDeltaY = _.get(lastMove, 1)
-
-  if (lastDeltaY === 1) {
-    // last moved down
-    if (deltaY === 1) {
-      return 28
-    } else if (deltaX === 1) {
-      return 36
-    } else if  (deltaX === -1) {
-      return 38
-    }
-  } else if (lastDeltaY === -1) {
-    // last moved up
-    if (deltaY === -1) {
-      return 28
-    } else if (deltaX === 1) {
-      // right
-      return 20
-    } else if  (deltaX === -1) {
-      // left
-      return 22
-    }
-  } else if (lastDeltaX === 1) {
-    // last moved right
-    if (deltaY === -1) {
-      // up
-      return 38
-    } else if (deltaY === 1) {
-      // down
-      return 22
-    } else if (deltaX === 1) {
-      // right
-      return 21
-    }
-  } else if (lastDeltaX === -1) {
-    // last moved left
-    if (deltaY === -1) {
-      // up
-      return 36
-    } else if (deltaY === 1) {
-      // down
-      return 20
-    } else if (deltaX === -1) {
-      // left
-      return 21
-    }
-  } else {
-    // no previous
-    if (deltaY === 1) {
-      // down
-      return 44
-    } else if (deltaY === -1) {
-      return 45
-    } else if (deltaX === -1) {
-      return 46
-    } else if (deltaX === 1) {
-      // left or right
-      return 47
-    }
-  }
-}
-
 
 const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
   const cursors = scene.input.keyboard.createCursorKeys()
@@ -137,6 +72,7 @@ class Player {
     gameObject.y = this.y * 16
 
     this.gameObject = gameObject
+    this.emitter = new Phaser.Events.EventEmitter();
 
     this.play('right')
 
@@ -177,7 +113,6 @@ class Player {
       return
     }
 
-
     const { map } = state
 
     const gameObject = this.gameObject
@@ -186,12 +121,11 @@ class Player {
     const moveY = (!deltaX && deltaY && this.canMove(map, 0, deltaY)) ? deltaY : 0
 
     if (moveX || moveY) {
-      const cableIndex = pickCable(moveX, moveY, this.moveHistory)
-      map.putTileAt(cableIndex, this.x, this.y, true, 'cables')
       this.x = this.x + moveX
       this.y = this.y + moveY
-      const underCableIndex = pickCable(-moveX, -moveY, null)
-      map.putTileAt(underCableIndex, this.x, this.y, true, 'cables')
+
+      this.emitter.emit('move', this.x, this.y, moveX, moveY)
+
       this.lastMove = +new Date()
       this.moveHistory.push([ moveX, moveY ])
     }
