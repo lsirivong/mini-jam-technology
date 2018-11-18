@@ -29,6 +29,19 @@ const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
 }
 
 class Player {
+  initialize(x, y) {
+    this.play('right')
+
+    this.moveHistory = []
+
+    this.x = x
+    this.y = y
+    this.gameObject.x = this.x * 16
+    this.gameObject.y = this.y * 16
+
+    this.gameObject.setDepth(10)
+  }
+
   preload(scene) {
     scene.load.spritesheet(
       'player', 
@@ -65,18 +78,11 @@ class Player {
       repeat: -1
     });
 
-    this.x = x
-    this.y = y
     gameObject.setOrigin(0)
-    gameObject.x = this.x * 16
-    gameObject.y = this.y * 16
-
     this.gameObject = gameObject
     this.emitter = new Phaser.Events.EventEmitter();
 
-    this.play('right')
-
-    this.moveHistory = []
+    this.initialize(x = 0, y = 0)
   }
 
   canMove(map, deltaX, deltaY) {
@@ -99,7 +105,7 @@ class Player {
     }
   }
 
-  update(state, scene) {
+  update(scene) {
     const now = +new Date()
     const STEP_THROTTLE = 200
     const deltaX = getAxisValue(scene, 'left', 'right', 0)
@@ -113,7 +119,7 @@ class Player {
       return
     }
 
-    const { map } = state
+    const { map } = scene
 
     const gameObject = this.gameObject
     const moveX = (deltaX && this.canMove(map, deltaX, 0)) ? deltaX : 0
@@ -124,10 +130,12 @@ class Player {
       this.x = this.x + moveX
       this.y = this.y + moveY
 
-      this.emitter.emit('move', this.x, this.y, moveX, moveY)
-
       this.lastMove = +new Date()
+      const prevMove = _.last(this.moveHistory)
       this.moveHistory.push([ moveX, moveY ])
+
+      this.emitter.emit('move', this.x, this.y, moveX, moveY, prevMove)
+
     }
 
     if (deltaX || deltaY) {

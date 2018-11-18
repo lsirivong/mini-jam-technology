@@ -1,7 +1,6 @@
 import _ from 'lodash'
 
-function pickCable(deltaX, deltaY, moveHistory) {
-  const lastMove = _.last(moveHistory)
+function pickCable(deltaX, deltaY, lastMove) {
   const lastDeltaX = _.get(lastMove, 0)
   const lastDeltaY = _.get(lastMove, 1)
 
