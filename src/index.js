@@ -97,12 +97,13 @@ function create() {
   var tiles = map.addTilesetImage('tileset');
   // var playerTiles = map.addTilesetImage('player_spritesheet');
 
-  var layer = map.createStaticLayer('background', tiles, 0, 0);
-  var layer = map.createStaticLayer('level', tiles, 0, 0);
-  var layer = map.createStaticLayer('items', tiles, 0, 0);
-  var playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
+  map.createStaticLayer('background', tiles, 0, 0);
+  map.createStaticLayer('level', tiles, 0, 0);
+  map.createStaticLayer('items', tiles, 0, 0);
+  state.playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
+  state.cableLayer = map.createDynamicLayer('cables', tiles, 0, 0);
 
-  map.setLayer(playerLayer)
+  map.setLayer(state.playerLayer)
 
   var playerTile = map.findTile(
     // find the player tile
