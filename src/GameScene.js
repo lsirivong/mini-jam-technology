@@ -8,13 +8,13 @@ import Player from './player'
 import pickCable from './pickCable'
 import InputHelper from './input_helper'
 
+// checks if a tile index exists in the list supplied
 const tileIndexIn = (tile, indexes) => {
   if (tile.index < 0) {
     return false
   }
 
   const firstgid = _.get(tile, 'tileset[0].firstgid')
-  console.log(tile)
   return (
     _.includes(indexes, tile.index - firstgid)
   )
@@ -78,7 +78,6 @@ class GameScene extends Phaser.Scene {
     this.switches = map.filterTiles(
       tile => tileIndexIn(tile, [31])
     )
-    console.log(this.switches)
 
     this.switchesFound = 0
 
@@ -129,7 +128,6 @@ class GameScene extends Phaser.Scene {
     } else if (_.get(itemTile, 'properties.exit')) {
       // if we're on the exit, check win condition
       if (this.switches.length <= this.switchesFound) {
-        console.log('WIN')
         this.currentLevel = (this.currentLevel + 1) % this.levels.length
         this.loadLevel()
       }
