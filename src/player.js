@@ -81,6 +81,12 @@ class Player {
       // check for walls
       const levelTile = map.getTileAt(newX, newY, false, 'level')
       const cableTile = map.getTileAt(newX, newY, false, 'cables')
+      const itemTile = map.getTileAt(newX, newY, false, 'items')
+
+      if (_.get(itemTile , 'properties.exit')) {
+        return this.scene.canExit()
+      }
+
       return (!levelTile && !cableTile)
     }
   }

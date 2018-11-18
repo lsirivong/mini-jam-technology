@@ -8,6 +8,18 @@ import Player from './player'
 import pickCable from './pickCable'
 import InputHelper from './input_helper'
 
+const tileIndexIn = (tile, indexes) => {
+  if (tile.index < 0) {
+    return false
+  }
+
+  const firstgid = _.get(tile, 'tileset[0].firstgid')
+  console.log(tile)
+  return (
+    _.includes(indexes, tile.index - firstgid)
+  )
+}
+
 class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'INGAME'})
@@ -58,24 +70,22 @@ class GameScene extends Phaser.Scene {
     map.createStaticLayer('background', tiles, 0, 0);
     map.createStaticLayer('level', tiles, 0, 0);
     map.createDynamicLayer('cables', tiles, 0, 0);
-    map.createDynamicLayer('items', tiles, 0, 0);
+    const itemLayer = map.createDynamicLayer('items', tiles, 0, 0);
     const playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
 
-    map.setLayer(playerLayer)
+    // get switches
+    map.setLayer(itemLayer)
+    this.switches = map.filterTiles(
+      tile => tileIndexIn(tile, [31])
+    )
+    console.log(this.switches)
 
+    this.switchesFound = 0
+
+    map.setLayer(playerLayer)
     var playerTile = map.findTile(
       // find the player tile
-      (tile, i) => {
-        if (tile.index < 0) {
-          return false
-        }
-
-        const firstgid = _.get(tile, 'tileset[0].firstgid')
-
-        return (
-          tile.index === (22 + firstgid)
-        )
-      }
+      tile => tileIndexIn(tile, [22])
     )
 
     map.removeTileAt(playerTile.x, playerTile.y)
@@ -90,6 +100,10 @@ class GameScene extends Phaser.Scene {
     player.emitter.on('move', this.handlePlayerMove, this)
 
     this.loadLevel()
+  }
+
+  canExit() {
+    return this.switches.length <= this.switchesFound
   }
 
   handlePlayerMove(x, y, deltaX, deltaY, lastMove) {
@@ -110,12 +124,15 @@ class GameScene extends Phaser.Scene {
       const SPR = {
         ON_SWITCH: 31
       }
+      this.switchesFound++
       map.putTileAt(SPR.ON_SWITCH, x, y, true, 'items')
     } else if (_.get(itemTile, 'properties.exit')) {
       // if we're on the exit, check win condition
-      console.log('WIN')
-      this.currentLevel = (this.currentLevel + 1) % this.levels.length
-      this.loadLevel()
+      if (this.switches.length <= this.switchesFound) {
+        console.log('WIN')
+        this.currentLevel = (this.currentLevel + 1) % this.levels.length
+        this.loadLevel()
+      }
     }
   }
 
