@@ -41,13 +41,37 @@ class Player {
       'player'
     );
 
+    scene.anims.create({
+      key: 'idle',
+      frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
+      frameRate: 2,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'right',
+      frames: scene.anims.generateFrameNumbers('player', { start: 8, end: 15 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    scene.anims.create({
+      key: 'left',
+      frames: scene.anims.generateFrameNumbers('player', { start: 16, end: 23 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
     this.x = x
     this.y = y
-
     gameObject.setOrigin(0)
+    gameObject.x = this.x * 16
+    gameObject.y = this.y * 16
 
-    console.log({ gameObject })
     this.gameObject = gameObject
+
+    this.play('right')
+
   }
 
   tryMove(map, deltaX, deltaY) {
@@ -57,11 +81,15 @@ class Player {
       const newX = this.x + deltaX
       const newY = this.y + deltaY
 
-      const tile = map.getTileAt(newX, newY, false, 'level')
-      if (tile) {
-        console.log('can\'t move: ', tile)
+      if (deltaX > 0) {
+        this.play('right')
+      } else if (deltaX < 0) {
+        this.play('left')
       }
-      else {
+
+      // check for walls
+      const tile = map.getTileAt(newX, newY, false, 'level')
+      if (!tile) {
         this.x = newX
         this.y = newY
         this.lastMove = +new Date()
@@ -93,11 +121,28 @@ class Player {
     }
 
     const gameObject = this.gameObject
-    gameObject.x = this.x * 16
-    gameObject.y = this.y * 16
+
+    const newX = this.x * 16
+    const newY = this.y * 16
+    if (deltaX || deltaY) {
+      scene.tweens.add({
+        targets: gameObject,
+        x: newX,
+        y: newY,
+        duration: 200,
+      });
+    }
 
     this.lastDeltaX = deltaX
     this.lastDeltaY = deltaY
+  }
+
+  play(key) {
+    if (this.activeAnim !== key) {
+      const gameObject = this.gameObject
+      this.activeAnim = key
+      gameObject.anims.play(key, true)
+    }
   }
 }
 
