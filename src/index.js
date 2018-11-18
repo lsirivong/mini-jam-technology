@@ -5,8 +5,8 @@ import GameScene from './GameScene'
 
 var config = {
   type: Phaser.AUTO,
-  width: 320,
-  height: 256,
+  width: 160,
+  height: 160,
   canvas: document.querySelector('canvas'),
   pixelArt: true,
   scene: [
