@@ -13,5 +13,18 @@
   },
   "scripts": {
     "start": "webpack-dev-server --open"
-  }
+  },
+  "description": "``` yarn ```",
+  "main": "webpack.config.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsirivong/mini-jam-technology.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lsirivong/mini-jam-technology/issues"
+  },
+  "homepage": "https://github.com/lsirivong/mini-jam-technology#readme"
 }
