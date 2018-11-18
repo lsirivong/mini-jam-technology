@@ -26,13 +26,19 @@ module.exports = env => ({
   module: {
     rules: [
       {
-        test: /\.(png|svg|jpg|gif|json)$/,
+        type: 'javascript/auto',
+        test: /\.json$/,
         use: [
           {
-            loader: 'url-loader',
-            options: {
-              limit: 1
-            }
+            loader: 'file-loader',
+          }
+        ]
+      },
+      {
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
           }
         ]
       }
