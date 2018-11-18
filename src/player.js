@@ -74,7 +74,7 @@ class Player {
 
   }
 
-  tryMove(map, deltaX, deltaY) {
+  canMove(map, deltaX, deltaY) {
     const gameObject = this.gameObject
 
     if (deltaX || deltaY) {
@@ -89,11 +89,7 @@ class Player {
 
       // check for walls
       const tile = map.getTileAt(newX, newY, false, 'level')
-      if (!tile) {
-        this.x = newX
-        this.y = newY
-        this.lastMove = +new Date()
-      }
+      return (!tile)
     }
   }
 
@@ -114,13 +110,23 @@ class Player {
 
     const { map } = state
 
-    if (deltaX) {
-      this.tryMove(map, deltaX, 0)
-    } else if (deltaY) {
-      this.tryMove(map, 0, deltaY)
-    }
-
     const gameObject = this.gameObject
+    if (deltaX) {
+      if (this.canMove(map, deltaX, 0)) {
+        this.x = this.x + deltaX
+      } else {
+        // todo: indicate can't move
+      }
+
+      this.lastMove = +new Date()
+    } else if (deltaY) {
+      if (this.canMove(map, 0, deltaY)) {
+        this.y = this.y + deltaY
+      } else {
+        // todo: indicate can't move
+      }
+      this.lastMove = +new Date()
+    }
 
     const newX = this.x * 16
     const newY = this.y * 16
@@ -129,7 +135,7 @@ class Player {
         targets: gameObject,
         x: newX,
         y: newY,
-        duration: 200,
+        duration: 100,
       });
     }
 
