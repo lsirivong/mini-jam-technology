@@ -4,6 +4,7 @@ import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
 import tiledJson from './tilemaps/level-1.json'
 import level2Json from './tilemaps/level-2.json'
+import level3Json from './tilemaps/level-3.json'
 import Player from './player'
 import pickCable from './pickCable'
 import InputHelper from './input_helper'
@@ -34,6 +35,10 @@ class GameScene extends Phaser.Scene {
       {
         key: 'level2',
         url: level2Json
+      },
+      {
+        key: 'level3',
+        url: level3Json
       }
     ]
 
