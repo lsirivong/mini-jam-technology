@@ -1,3 +1,6 @@
+import fonttTexture from './assets/font.png'
+import fontRule from './assets/font.fnt'
+
 export class LoadScene extends Phaser.Scene{
   constructor(){
     super({
@@ -9,6 +12,8 @@ export class LoadScene extends Phaser.Scene{
     let title = this.add.text(this.game.config.width/2, 20, "loading...", style);
   }
   preload(){
+    this.load.bitmapFont('pixel_font', fonttTexture, fontRule);
+
   }
   create(){
     this.scene.start("MENU");

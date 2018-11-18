@@ -1,4 +1,5 @@
 import cursorUrl from './assets/cursor.png'
+
 export class MenuScene extends Phaser.Scene {
 	constructor() {
 		super({
@@ -22,6 +23,7 @@ export class MenuScene extends Phaser.Scene {
 		}, ];
 	}
 	create() {
+
 		this.canSelect = true;
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.cursor = this.add.image(0, 100, 'cursor').setOrigin(0, 0);
@@ -36,7 +38,7 @@ export class MenuScene extends Phaser.Scene {
 			align: 'center'
 		};
 		this.choices.forEach((choice, index) => {
-			choice.text = this.add.text(this.game.config.width / 2, 100 + (20 * index), choice.name, small_style);
+			choice.text = this.add.bitmapText(this.game.config.width / 2, 100 + (20 * index), 'pixel_font', choice.name, 16).setCenterAlign();
 		});
 	}
 	update() {
@@ -48,7 +50,7 @@ export class MenuScene extends Phaser.Scene {
 			this.incrementSelection(-1);
 		}
     // IF X PRESSED
-    // this.scene.start(this.choices[this.selection].key);
+    // this.scene.start(this.choices[this.selection]);
 	}
 	incrementSelection(value) {
 		if (this.selection + value > -1 && this.selection + value < this.choices.length) {
