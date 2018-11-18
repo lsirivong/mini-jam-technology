@@ -6,48 +6,98 @@ const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
   const cursors = scene.input.keyboard.createCursorKeys()
   const pad = _.get(scene, 'input.gamepad.gamepads[0]')
 
-  if (_.get(cursors, [negativeButton, 'isDown']) || _.get(pad, negativeButton) ? -1 : 0) {
+  const axisValueRaw = _.get(pad, `axes[${axisIndex}].value`) || 0
+  const axisValue = Math.abs(axisValueRaw) > AXIS_THRESHOLD ? axisValueRaw : 0
+  if (
+    _.get(cursors, [negativeButton, 'isDown'])
+    || _.get(pad, negativeButton)
+    || axisValue < 0
+  ) {
     return -1
-  } else if (_.get(cursors, [positiveButton, 'isDown']) || _.get(pad, positiveButton) ? -1 : 0) {
+  } else if (
+    _.get(cursors, [positiveButton, 'isDown'])
+    || _.get(pad, positiveButton)
+    || axisValue > 0
+  ) {
     return 1
-  } else {
-    const val = _.get(pad, `axes[${axisIndex}].value`) || 0
-    return Math.abs(val) > AXIS_THRESHOLD ? val : 0
   }
+
+  return 0
 }
 
 class Player {
   preload(scene) {
     scene.load.spritesheet(
-      'dude', 
+      'player', 
       spritesheet,
       { frameWidth: 16, frameHeight: 16 }
     );
   }
 
-  create(scene) {
-    const gameObject = scene.physics.add.sprite(
-      120,
-      120,
-      'dude'
+  create(scene, x, y) {
+    const gameObject = scene.add.sprite(
+      0,
+      0,
+      'player'
     );
 
-    gameObject.setBounce(0.2);
-    // gameObject.setDamping(true);
-    gameObject.setDrag(800);
-    gameObject.setCollideWorldBounds(true);
+    this.x = x
+    this.y = y
 
+    gameObject.setOrigin(0)
+
+    console.log({ gameObject })
     this.gameObject = gameObject
   }
 
-  update(scene) {
+  tryMove(map, deltaX, deltaY) {
     const gameObject = this.gameObject
 
-    const xMult = getAxisValue(scene, 'left', 'right', 0)
-    gameObject.setVelocityX(xMult * PLAYER_SPEED);
+    if (deltaX || deltaY) {
+      const newX = this.x + deltaX
+      const newY = this.y + deltaY
 
-    const yMult = getAxisValue(scene, 'up', 'down', 1)
-    gameObject.setVelocityY(yMult * PLAYER_SPEED);
+      const tile = map.getTileAt(newX, newY, false, 'level')
+      if (tile) {
+        console.log('can\'t move: ', tile)
+      }
+      else {
+        this.x = newX
+        this.y = newY
+        this.lastMove = +new Date()
+      }
+    }
+  }
+
+  update(state, scene) {
+    const now = +new Date()
+    const STEP_THROTTLE = 200
+    const deltaX = getAxisValue(scene, 'left', 'right', 0)
+    const deltaY = getAxisValue(scene, 'up', 'down', 1)
+
+    if (
+      this.lastMove && now - this.lastMove < STEP_THROTTLE
+      && ((deltaX && this.lastDeltaX)
+      || (deltaY && this.lastDeltaY))
+    ) {
+      return
+    }
+
+
+    const { map } = state
+
+    if (deltaX) {
+      this.tryMove(map, deltaX, 0)
+    } else if (deltaY) {
+      this.tryMove(map, 0, deltaY)
+    }
+
+    const gameObject = this.gameObject
+    gameObject.x = this.x * 16
+    gameObject.y = this.y * 16
+
+    this.lastDeltaX = deltaX
+    this.lastDeltaY = deltaY
   }
 }
 

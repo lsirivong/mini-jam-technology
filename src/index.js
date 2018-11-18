@@ -1,17 +1,15 @@
 import _ from 'lodash'
 import Phaser from 'phaser'
-import starUrl from './assets/star.png'
 import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
+// import playerUrl from './assets/player_spritesheet.png'
 import tiledJson from './tilemaps/level-1.json'
 import updateFn from './update'
 import Player from './player'
-import Walls from './walls'
 
 let state = {
+  player: new Player(),
   actors: {
-    // walls: new Walls(),
-    player: new Player(),
   },
   map: null
 }
@@ -75,10 +73,8 @@ function loadLevelFromTexture(textures, key) {
 }
 
 function preload() {
-  this.load.image('star', starUrl)
-  // this.load.image('level-1', level1Url)
-  // this.load.spritesheet('tileset', tilesetUrl, { frameWidth: CELL_SIZE, frameHeight: CELL_SIZE })
   this.load.image('tileset', tilesetUrl)
+  // this.load.image('player_spritesheet', playerUrl)
   this.load.tilemapTiledJSON({
     key: 'level1',
     url: tiledJson
@@ -87,6 +83,7 @@ function preload() {
   _.each(state.actors, actor => {
     actor.preload.call(actor, this)
   })
+  state.player.preload.call(state.player, this)
 
   this.input.gamepad.once('connected', function (pad) {
     pad.threshold = 0.5
@@ -94,18 +91,40 @@ function preload() {
 }
 
 function create() {
-  this.add.image(400, 300, 'star')
-
   state.map = this.make.tilemap({ key: 'level1' })
   const { map } = state
 
   var tiles = map.addTilesetImage('tileset');
+  // var playerTiles = map.addTilesetImage('player_spritesheet');
 
-  var layer = map.createStaticLayer(0, tiles, 0, 0);
+  var layer = map.createStaticLayer('background', tiles, 0, 0);
+  var layer = map.createStaticLayer('level', tiles, 0, 0);
+  var layer = map.createStaticLayer('items', tiles, 0, 0);
+  var playerLayer = map.createDynamicLayer('player', tiles, 0, 0);
+
+  map.setLayer(playerLayer)
+
+  var playerTile = map.findTile(
+    // find the player tile
+    (tile, i) => {
+      if (tile.index < 0) {
+        return false
+      }
+
+      const firstgid = _.get(tile, 'tileset[0].firstgid')
+
+      return (
+        tile.index === (22 + firstgid)
+      )
+    }
+  )
 
   _.each(state.actors, actor => {
     actor.create.call(actor, this)
   })
+
+  state.player.create.call(state.player, this, playerTile.x, playerTile.y)
+  map.removeTileAt(playerTile.x, playerTile.y)
 }
 
 function update()
@@ -119,15 +138,6 @@ var config = {
   height: 256,
   canvas: document.querySelector('canvas'),
   pixelArt: true,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 0
-      },
-      debug: false
-    }
-  },
   scene: {
     preload: preload,
     create: create,
@@ -139,7 +149,6 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
-console.log(game.canvas)
 
 if (module.hot) {
   module.hot.accept('./update.js')
