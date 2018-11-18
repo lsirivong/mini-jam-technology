@@ -1,4 +1,5 @@
 import cursorUrl from './assets/cursor.png'
+import InputHelper from './input_helper'
 
 export class MenuScene extends Phaser.Scene {
 	constructor() {
@@ -23,7 +24,7 @@ export class MenuScene extends Phaser.Scene {
 		}, ];
 	}
 	create() {
-
+		this.inputHelper = new InputHelper(this)
 		this.canSelect = true;
 		this.arrow = this.input.keyboard.createCursorKeys();
 		this.cursor = this.add.image(0, 100, 'cursor').setOrigin(0, 0);
@@ -44,13 +45,14 @@ export class MenuScene extends Phaser.Scene {
 	update() {
 		this.cursor.x = (this.game.config.width / 2) - 20 + Math.sin(this.game.loop.frame * 0.1) * 4;
 		this.cursor.y = 100 + (this.selection * 20);
-		if (this.arrow.down.isDown) {
-			this.incrementSelection(1);
-		} else if (this.arrow.up.isDown) {
-			this.incrementSelection(-1);
-		}
-    // IF X PRESSED
-    // this.scene.start(this.choices[this.selection]);
+
+		const deltaY = this.inputHelper.getVerticalPressed()
+
+		if (deltaY) {
+			this.incrementSelection(deltaY);
+                } else if (this.inputHelper.buttonPressed('x')) {
+			this.scene.start(this.choices[this.selection].key);
+                }
 	}
 	incrementSelection(value) {
 		if (this.selection + value > -1 && this.selection + value < this.choices.length) {

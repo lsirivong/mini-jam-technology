@@ -2,33 +2,11 @@ import _ from 'lodash'
 import spritesheet from './assets/player_spritesheet.png'
 import pickCable from './pickCable'
 
-const PLAYER_SPEED = 300;
-const AXIS_THRESHOLD = 0.2;
-
-const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
-  const cursors = scene.input.keyboard.createCursorKeys()
-  const pad = _.get(scene, 'input.gamepad.gamepads[0]')
-
-  const axisValueRaw = _.get(pad, `axes[${axisIndex}].value`) || 0
-  const axisValue = Math.abs(axisValueRaw) > AXIS_THRESHOLD ? axisValueRaw : 0
-  if (
-    _.get(cursors, [negativeButton, 'isDown'])
-    || _.get(pad, negativeButton)
-    || axisValue < 0
-  ) {
-    return -1
-  } else if (
-    _.get(cursors, [positiveButton, 'isDown'])
-    || _.get(pad, positiveButton)
-    || axisValue > 0
-  ) {
-    return 1
+class Player {
+  constructor(scene) {
+    this.scene = scene
   }
 
-  return 0
-}
-
-class Player {
   initialize(x, y) {
     this.play('right')
 
@@ -42,7 +20,8 @@ class Player {
     this.gameObject.setDepth(10)
   }
 
-  preload(scene) {
+  preload() {
+    const { scene } = this
     scene.load.spritesheet(
       'player', 
       spritesheet,
@@ -50,7 +29,8 @@ class Player {
     );
   }
 
-  create(scene, x, y) {
+  create(x, y) {
+    const { scene } = this
     const gameObject = scene.add.sprite(
       0,
       0,
@@ -105,19 +85,10 @@ class Player {
     }
   }
 
-  update(scene) {
-    const now = +new Date()
-    const STEP_THROTTLE = 200
-    const deltaX = getAxisValue(scene, 'left', 'right', 0)
-    const deltaY = getAxisValue(scene, 'up', 'down', 1)
-
-    if (
-      this.lastMove && now - this.lastMove < STEP_THROTTLE
-      && ((deltaX && this.lastDeltaX)
-      || (deltaY && this.lastDeltaY))
-    ) {
-      return
-    }
+  update() {
+    const { scene } = this
+    const deltaX = this.scene.inputHelper.getAxisPressed('left', 'right', 0)
+    const deltaY = this.scene.inputHelper.getAxisPressed('up', 'down', 1)
 
     const { map } = scene
 
@@ -130,7 +101,6 @@ class Player {
       this.x = this.x + moveX
       this.y = this.y + moveY
 
-      this.lastMove = +new Date()
       const prevMove = _.last(this.moveHistory)
       this.moveHistory.push([ moveX, moveY ])
 
@@ -148,9 +118,6 @@ class Player {
         duration: 100,
       });
     }
-
-    this.lastDeltaX = deltaX
-    this.lastDeltaY = deltaY
   }
 
   play(key) {

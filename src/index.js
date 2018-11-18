@@ -9,7 +9,11 @@ var config = {
   height: 256,
   canvas: document.querySelector('canvas'),
   pixelArt: true,
-  scene:[LoadScene,MenuScene,GamePlayScene],
+  scene: [
+    LoadScene,
+    MenuScene,
+    GameScene,
+  ],
   input: {
     gamepad: true
   },

@@ -6,12 +6,13 @@ import tiledJson from './tilemaps/level-1.json'
 import level2Json from './tilemaps/level-2.json'
 import Player from './player'
 import pickCable from './pickCable'
+import InputHelper from './input_helper'
 
 class GameScene extends Phaser.Scene {
   constructor() {
-    super({ key: 'Game'})
+    super({ key: 'INGAME'})
 
-    this.player = new Player()
+    this.player = new Player(this)
 
     this.levels = [
       {
@@ -34,7 +35,7 @@ class GameScene extends Phaser.Scene {
       this.load.tilemapTiledJSON(level);
     })
 
-    this.player.preload.call(this.player, this)
+    this.player.preload.call(this.player)
 
     this.input.gamepad.once('connected', function (pad) {
       pad.threshold = 0.5
@@ -83,8 +84,9 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    this.inputHelper = new InputHelper(this)
     const { player } = this
-    player.create.call(player, this)
+    player.create.call(player)
     player.emitter.on('move', this.handlePlayerMove, this)
 
     this.loadLevel()
@@ -119,7 +121,7 @@ class GameScene extends Phaser.Scene {
 
   update() {
     const { player } = this
-    player.update.call(player, this)
+    player.update.call(player)
   }
 }
 
