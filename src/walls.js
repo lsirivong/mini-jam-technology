@@ -1,5 +1,3 @@
-import platformUrl from './assets/platform.png'
-
 class Wall {
   preload(scene) {
     scene.load.image('ground', platformUrl);

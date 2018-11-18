@@ -1,11 +1,16 @@
 import _ from 'lodash'
 import Phaser from 'phaser'
+
+import {LoadScene} from './load_scene.js'
+import {MenuScene} from './menu_scene.js'
+
 import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
 // import playerUrl from './assets/player_spritesheet.png'
 import tiledJson from './tilemaps/level-1.json'
 import updateFn from './update'
 import Player from './player'
+
 
 let state = {
   player: new Player(),
@@ -57,7 +62,7 @@ function levelColorToObjectIndex(c) {
 
 function loadLevelFromTexture(textures, key) {
   const level = []
-  
+
   for (let i = 0; i < GRID_WIDTH; i++) {
     for (let j = 0; j < GRID_HEIGHT; j++) {
       if (!level[i]) {
@@ -139,11 +144,13 @@ var config = {
   height: 256,
   canvas: document.querySelector('canvas'),
   pixelArt: true,
+  scene:[LoadScene,MenuScene],
+  /*
   scene: {
     preload: preload,
     create: create,
     update: update
-  },
+  },*/
   input: {
     gamepad: true
   },
