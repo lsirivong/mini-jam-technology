@@ -1,100 +1,27 @@
 import _ from 'lodash'
 import spritesheet from './assets/player_spritesheet.png'
-
-const PLAYER_SPEED = 300;
-const AXIS_THRESHOLD = 0.2;
-
-function pickCable(deltaX, deltaY, moveHistory) {
-  const lastMove = _.last(moveHistory)
-  const lastDeltaX = _.get(lastMove, 0)
-  const lastDeltaY = _.get(lastMove, 1)
-
-  if (lastDeltaY === 1) {
-    // last moved down
-    if (deltaY === 1) {
-      return 28
-    } else if (deltaX === 1) {
-      return 36
-    } else if  (deltaX === -1) {
-      return 38
-    }
-  } else if (lastDeltaY === -1) {
-    // last moved up
-    if (deltaY === -1) {
-      return 28
-    } else if (deltaX === 1) {
-      // right
-      return 20
-    } else if  (deltaX === -1) {
-      // left
-      return 22
-    }
-  } else if (lastDeltaX === 1) {
-    // last moved right
-    if (deltaY === -1) {
-      // up
-      return 38
-    } else if (deltaY === 1) {
-      // down
-      return 22
-    } else if (deltaX === 1) {
-      // right
-      return 21
-    }
-  } else if (lastDeltaX === -1) {
-    // last moved left
-    if (deltaY === -1) {
-      // up
-      return 36
-    } else if (deltaY === 1) {
-      // down
-      return 20
-    } else if (deltaX === -1) {
-      // left
-      return 21
-    }
-  } else {
-    // no previous
-    if (deltaY === 1) {
-      // down
-      return 44
-    } else if (deltaY === -1) {
-      return 45
-    } else if (deltaX === -1) {
-      return 46
-    } else if (deltaX === 1) {
-      // left or right
-      return 47
-    }
-  }
-}
-
-
-const getAxisValue = (scene, negativeButton, positiveButton, axisIndex) => {
-  const cursors = scene.input.keyboard.createCursorKeys()
-  const pad = _.get(scene, 'input.gamepad.gamepads[0]')
-
-  const axisValueRaw = _.get(pad, `axes[${axisIndex}].value`) || 0
-  const axisValue = Math.abs(axisValueRaw) > AXIS_THRESHOLD ? axisValueRaw : 0
-  if (
-    _.get(cursors, [negativeButton, 'isDown'])
-    || _.get(pad, negativeButton)
-    || axisValue < 0
-  ) {
-    return -1
-  } else if (
-    _.get(cursors, [positiveButton, 'isDown'])
-    || _.get(pad, positiveButton)
-    || axisValue > 0
-  ) {
-    return 1
-  }
-
-  return 0
-}
+import pickCable from './pickCable'
 
 class Player {
-  preload(scene) {
+  constructor(scene) {
+    this.scene = scene
+  }
+
+  initialize(x, y) {
+    this.play('right')
+
+    this.moveHistory = []
+
+    this.x = x
+    this.y = y
+    this.gameObject.x = this.x * 16
+    this.gameObject.y = this.y * 16
+
+    this.gameObject.setDepth(10)
+  }
+
+  preload() {
+    const { scene } = this
     scene.load.spritesheet(
       'player', 
       spritesheet,
@@ -102,7 +29,8 @@ class Player {
     );
   }
 
-  create(scene, x, y) {
+  create(x, y) {
+    const { scene } = this
     const gameObject = scene.add.sprite(
       0,
       0,
@@ -130,17 +58,11 @@ class Player {
       repeat: -1
     });
 
-    this.x = x
-    this.y = y
     gameObject.setOrigin(0)
-    gameObject.x = this.x * 16
-    gameObject.y = this.y * 16
-
     this.gameObject = gameObject
+    this.emitter = new Phaser.Events.EventEmitter();
 
-    this.play('right')
-
-    this.moveHistory = []
+    this.initialize(x = 0, y = 0)
   }
 
   canMove(map, deltaX, deltaY) {
@@ -163,22 +85,12 @@ class Player {
     }
   }
 
-  update(state, scene) {
-    const now = +new Date()
-    const STEP_THROTTLE = 200
-    const deltaX = getAxisValue(scene, 'left', 'right', 0)
-    const deltaY = getAxisValue(scene, 'up', 'down', 1)
+  update() {
+    const { scene } = this
+    const deltaX = this.scene.inputHelper.getAxisPressed('left', 'right', 0)
+    const deltaY = this.scene.inputHelper.getAxisPressed('up', 'down', 1)
 
-    if (
-      this.lastMove && now - this.lastMove < STEP_THROTTLE
-      && ((deltaX && this.lastDeltaX)
-      || (deltaY && this.lastDeltaY))
-    ) {
-      return
-    }
-
-
-    const { map } = state
+    const { map } = scene
 
     const gameObject = this.gameObject
     const moveX = (deltaX && this.canMove(map, deltaX, 0)) ? deltaX : 0
@@ -186,14 +98,14 @@ class Player {
     const moveY = (!deltaX && deltaY && this.canMove(map, 0, deltaY)) ? deltaY : 0
 
     if (moveX || moveY) {
-      const cableIndex = pickCable(moveX, moveY, this.moveHistory)
-      map.putTileAt(cableIndex, this.x, this.y, true, 'cables')
       this.x = this.x + moveX
       this.y = this.y + moveY
-      const underCableIndex = pickCable(-moveX, -moveY, null)
-      map.putTileAt(underCableIndex, this.x, this.y, true, 'cables')
-      this.lastMove = +new Date()
+
+      const prevMove = _.last(this.moveHistory)
       this.moveHistory.push([ moveX, moveY ])
+
+      this.emitter.emit('move', this.x, this.y, moveX, moveY, prevMove)
+
     }
 
     if (deltaX || deltaY) {
@@ -206,9 +118,6 @@ class Player {
         duration: 100,
       });
     }
-
-    this.lastDeltaX = deltaX
-    this.lastDeltaY = deltaY
   }
 
   play(key) {
