@@ -14,7 +14,7 @@
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 26, 26, 26, 26, 26, 26, 27, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 1, 2, 3, 0, 0, 35, 0, 0, 33, 0, 17, 5, 11, 0, 0, 35, 0, 0, 33, 0, 0, 17, 19, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 41, 42, 42, 42, 42, 42, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25, 26, 26, 26, 26, 26, 26, 27, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 33, 0, 0, 0, 0, 0, 0, 35, 0, 0, 41, 42, 42, 42, 42, 42, 42, 43, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":10,
          "id":7,
          "name":"level",
@@ -38,7 +38,7 @@
          "y":0
         }, 
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 0, 0, 32, 17, 5, 11, 0, 0, 0, 0, 0, 0, 0, 0, 17, 19, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":10,
          "id":9,
          "name":"items",
@@ -81,127 +81,10 @@
          "tileheight":16,
          "tiles":[
                 {
-                 "id":0,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":1,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":2,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":7,
-                 "properties":[
-                        {
-                         "name":"prevent_cable",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":8,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":9,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":10,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
                  "id":15,
                  "properties":[
                         {
                          "name":"exit",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":16,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":17,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":18,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":24,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":25,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":26,
-                 "properties":[
-                        {
-                         "name":"obstacle",
                          "type":"bool",
                          "value":true
                         }]
@@ -213,11 +96,6 @@
                          "name":"on_switch",
                          "type":"bool",
                          "value":true
-                        }, 
-                        {
-                         "name":"prevent_cable",
-                         "type":"bool",
-                         "value":true
                         }]
                 }, 
                 {
@@ -225,65 +103,6 @@
                  "properties":[
                         {
                          "name":"off_switch",
-                         "type":"bool",
-                         "value":true
-                        }, 
-                        {
-                         "name":"prevent_cable",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":32,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":33,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":34,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":40,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":41,
-                 "properties":[
-                        {
-                         "name":"obstacle",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":42,
-                 "properties":[
-                        {
-                         "name":"obstacle",
                          "type":"bool",
                          "value":true
                         }]

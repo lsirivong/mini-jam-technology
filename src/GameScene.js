@@ -2,9 +2,7 @@ import _ from 'lodash'
 import Phaser from 'phaser'
 import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
-import tiledJson from './tilemaps/level-1.json'
-import level2Json from './tilemaps/level-2.json'
-import level3Json from './tilemaps/level-3.json'
+import levels from './levels'
 import Player from './player'
 import pickCable from './pickCable'
 import InputHelper from './input_helper'
@@ -27,28 +25,13 @@ class GameScene extends Phaser.Scene {
 
     this.player = new Player(this)
 
-    this.levels = [
-      {
-        key: 'level1',
-        url: tiledJson,
-      },
-      {
-        key: 'level2',
-        url: level2Json
-      },
-      {
-        key: 'level3',
-        url: level3Json
-      }
-    ]
-
     this.currentLevel = 0
   }
 
   preload() {
     this.load.image('tileset', tilesetUrl)
     // this.load.image('player_spritesheet', playerUrl)
-    _.each(this.levels, level => {
+    _.each(levels, level => {
       this.load.tilemapTiledJSON(level);
     })
 
@@ -60,7 +43,7 @@ class GameScene extends Phaser.Scene {
   }
 
   loadLevel() {
-    const level = this.levels[this.currentLevel]
+    const level = levels[this.currentLevel]
 
     if (this.map) {
       this.map.destroy()
@@ -133,7 +116,7 @@ class GameScene extends Phaser.Scene {
     } else if (_.get(itemTile, 'properties.exit')) {
       // if we're on the exit, check win condition
       if (this.switches.length <= this.switchesFound) {
-        this.currentLevel = (this.currentLevel + 1) % this.levels.length
+        this.currentLevel = (this.currentLevel + 1) % levels.length
         this.loadLevel()
       }
     }
