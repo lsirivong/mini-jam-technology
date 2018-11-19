@@ -6,7 +6,6 @@ import level5Json from './tilemaps/level-5.json'
 import level6Json from './tilemaps/level-6.json'
 
 const levels = [
-  /*
   {
     key: 'level1',
     url: level1Json,
@@ -27,7 +26,6 @@ const levels = [
     key: 'level5',
     url: level5Json
   },
-  */
   {
     key: 'level6',
     url: level6Json
