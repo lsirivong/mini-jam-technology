@@ -5,6 +5,7 @@ import menu_background from './assets/menu_background.png'
 
 import InputHelper from './input_helper'
 
+
 export class MenuScene extends Phaser.Scene {
 	constructor() {
 		super({
@@ -18,16 +19,22 @@ export class MenuScene extends Phaser.Scene {
 	}
 	init(data) {
 		this.selection = 0;
-		this.choices = [{
-			name: "play",
-			key: "INGAME"
-		}, {
-			name: "level selection",
-			key: "SELECT"
-		}, {
-			name: "about",
-			key: "ABOUT"
-		}, ];
+		this.choices = [
+			{
+				name: "play",
+				key: "INGAME"
+			},
+			/*
+			{
+				name: "level selection",
+				key: "SELECT"
+			},
+			{
+				name: "about",
+				key: "ABOUT"
+			},
+			*/
+		];
 	}
 	create() {
 		let bg = this.add.image(0, 0, 'background');
