@@ -37,26 +37,32 @@ class Player {
       'player'
     );
 
-    scene.anims.create({
-      key: 'idle',
-      frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
-      frameRate: 2,
-      repeat: -1
-    });
+    if (!scene.anims.get('idle')) {
+      scene.anims.create({
+        key: 'idle',
+        frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 1 }),
+        frameRate: 2,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: 'right',
-      frames: scene.anims.generateFrameNumbers('player', { start: 8, end: 15 }),
-      frameRate: 8,
-      repeat: -1
-    });
+    if (!scene.anims.get('right')) {
+      scene.anims.create({
+        key: 'right',
+        frames: scene.anims.generateFrameNumbers('player', { start: 8, end: 15 }),
+        frameRate: 8,
+        repeat: -1
+      });
+    }
 
-    scene.anims.create({
-      key: 'left',
-      frames: scene.anims.generateFrameNumbers('player', { start: 16, end: 23 }),
-      frameRate: 8,
-      repeat: -1
-    });
+    if (!scene.anims.get('left')) {
+      scene.anims.create({
+        key: 'left',
+        frames: scene.anims.generateFrameNumbers('player', { start: 16, end: 23 }),
+        frameRate: 8,
+        repeat: -1
+      });
+    }
 
     gameObject.setOrigin(0)
     this.gameObject = gameObject

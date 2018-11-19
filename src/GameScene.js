@@ -116,8 +116,14 @@ class GameScene extends Phaser.Scene {
     } else if (_.get(itemTile, 'properties.exit')) {
       // if we're on the exit, check win condition
       if (this.switches.length <= this.switchesFound) {
-        this.currentLevel = (this.currentLevel + 1) % levels.length
-        this.loadLevel()
+        this.currentLevel = this.currentLevel + 1
+        if (this.currentLevel < levels.length) {
+          this.loadLevel()
+        }
+        else {
+          this.currentLevel = 0
+          this.scene.start('MENU')
+        }
       }
     }
   }
