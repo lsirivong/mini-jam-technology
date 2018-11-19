@@ -135,6 +135,11 @@ class GameScene extends Phaser.Scene {
   }
 
   update() {
+    if (this.inputHelper.buttonPressed('z')) {
+      console.log('UNDO')
+      this.loadLevel()
+    }
+
     const { player } = this
     player.update.call(player)
   }

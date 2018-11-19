@@ -6,6 +6,10 @@ const BUTTON_MAP = {
   x: {
     pad: 'A',
     key: 'x'
+  },
+  z: {
+    pad: 'B',
+    key: 'z'
   }
 }
 
@@ -18,7 +22,8 @@ class InputHelper {
     this.scene = scene
 
     this.keys = {
-      x: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X)
+      x: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X),
+      z: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z),
     }
   }
   

@@ -93,6 +93,7 @@ class Player {
 
   update() {
     const { scene } = this
+
     const deltaX = this.scene.inputHelper.getAxisPressed('left', 'right', 0)
     const deltaY = this.scene.inputHelper.getAxisPressed('up', 'down', 1)
 
