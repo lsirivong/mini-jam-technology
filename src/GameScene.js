@@ -4,6 +4,7 @@ import level1Url from './assets/level-1.png'
 import tilesetUrl from './assets/tileset.png'
 import levels from './levels'
 import Player from './player'
+import Exit from './Exit'
 import pickCable from './pickCable'
 import InputHelper from './input_helper'
 
@@ -24,18 +25,19 @@ class GameScene extends Phaser.Scene {
     super({ key: 'INGAME'})
 
     this.player = new Player(this)
+    this.exit = new Exit(this)
 
     this.currentLevel = 0
   }
 
   preload() {
     this.load.image('tileset', tilesetUrl)
-    // this.load.image('player_spritesheet', playerUrl)
     _.each(levels, level => {
       this.load.tilemapTiledJSON(level);
     })
 
     this.player.preload.call(this.player)
+    this.exit.preload.call(this.exit)
 
     this.input.gamepad.once('connected', function (pad) {
       pad.threshold = 0.5
@@ -66,24 +68,34 @@ class GameScene extends Phaser.Scene {
     this.switches = map.filterTiles(
       tile => tileIndexIn(tile, [31])
     )
+    const exitTile = map.findTile(
+      tile => _.get(tile, 'properties.exit')
+    )
 
     this.switchesFound = 0
 
+    // map.removeTileAt(playerTile.x, playerTile.y)
+    this.exit.initialize(exitTile.x, exitTile.y)
+
+
     map.setLayer(playerLayer)
     var playerTile = map.findTile(
-      // find the player tile
       tile => tileIndexIn(tile, [22])
     )
-
     map.removeTileAt(playerTile.x, playerTile.y)
-
     this.player.initialize(playerTile.x, playerTile.y)
+
+    if (this.canExit()) {
+      this.exit.activate()
+    }
   }
 
   create() {
     this.inputHelper = new InputHelper(this)
-    const { player } = this
+    const { player, exit } = this
     player.create.call(player)
+    exit.create.call(exit)
+
     player.emitter.on('move', this.handlePlayerMove, this)
 
     this.loadLevel()
@@ -112,6 +124,9 @@ class GameScene extends Phaser.Scene {
         ON_SWITCH: 31
       }
       this.switchesFound++
+      if (this.canExit()) {
+        this.exit.activate()
+      }
       map.putTileAt(SPR.ON_SWITCH, x, y, true, 'items')
     } else if (_.get(itemTile, 'properties.exit')) {
       // if we're on the exit, check win condition
@@ -130,7 +145,6 @@ class GameScene extends Phaser.Scene {
 
   update() {
     if (this.inputHelper.buttonPressed('z')) {
-      console.log('UNDO')
       this.loadLevel()
     }
 
